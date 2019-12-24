@@ -1,0 +1,86 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Sound Capture
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /time:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: sound_capture
+    get:
+      description: Returns time in us to the caller
+      # used as the method name of the controller
+      operationId: time
+      parameters:
+        - name: name
+          in: query
+          description: xxx
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TimeResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /sound:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: sound_capture
+    get:
+      description: Returns sound as binary to the caller
+      produces:
+        - audio/wav
+      # used as the method name of the controller
+      operationId: sound
+      parameters:
+        - name: time
+          in: query
+          description: time (epoch in ms) recording should start
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+            format: file
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  TimeResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
