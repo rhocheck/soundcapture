@@ -13,6 +13,7 @@ urlMaster = "http://h87:10010"
 urlRemote = "http://pi-sensehat:10010"
 fileMaster = 'master.wav'
 fileRemote = 'remote.wav'
+delayRemoteMic = -20000
 
 def getTime(url):
   try:
@@ -78,7 +79,7 @@ if __name__ == '__main__':
   now = getTime(urlMaster)
   startTime = now + 2000000
   urlSoundMaster = (urlMaster + "/sound?time={}").format(startTime)
-  urlSoundRemote = (urlRemote + "/sound?time={}").format(startTime)
+  urlSoundRemote = (urlRemote + "/sound?time={}").format(startTime + delayRemoteMic)
  
   threadMaster = threading.Thread(target=getSound, args=(urlSoundMaster, fileMaster))
   threadRemote = threading.Thread(target=getSound, args=(urlSoundRemote, fileRemote))
