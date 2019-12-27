@@ -1,5 +1,5 @@
 FROM node:12-alpine AS build
-RUN apk --update add --no-cache python3 make g++
+RUN apk --update add --no-cache python3 make g++ alsa-lib-dev
 
 RUN adduser root audio
 

@@ -13,7 +13,7 @@ urlMaster = "http://h87:10010"
 urlRemote = "http://pi-sensehat:10010"
 fileMaster = 'master.wav'
 fileRemote = 'remote.wav'
-delayRemoteMic = -20000
+delayRemoteMic = 0
 
 def getTime(url):
   try:
@@ -38,6 +38,7 @@ def getSound(url, filename):
     sys.exit(1)
   audio = open(filename, 'wb')
   audio.write(response.content)
+  audio.close()
 
 def plotSound(masterAudio, remoteAudio):
   # read wav from master and remote audio

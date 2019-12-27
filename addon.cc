@@ -1,6 +1,6 @@
 #include <napi.h>
 #include <sys/time.h>
-#include <stdint.h>
+#include "recordwrap.h"
 
 Napi::String getTime(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -12,10 +12,10 @@ Napi::String getTime(const Napi::CallbackInfo& info) {
   return Napi::String::New(env, micros);
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  exports.Set(Napi::String::New(env, "gettimeofday"),
-              Napi::Function::New(env, getTime));
+Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
+  exports = CRecordWrap::Init(env, exports);
+  exports.Set("gettimeofday", Napi::Function::New(env, getTime));
   return exports;
 }
 
-NODE_API_MODULE(util, Init)
+NODE_API_MODULE(addon, InitAll)
