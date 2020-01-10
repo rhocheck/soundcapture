@@ -9,8 +9,9 @@ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 docker rm $(docker ps -qa --no-trunc --filter "status=exited")
 
 # build multi-arch docker images
-docker buildx build --platform linux/arm/v7,linux/amd64 -t rhocheck/soundcapture:latest --push .
+docker buildx build --platform linux/arm/v6,linux/arm/v7,linux/amd64 -t rhocheck/soundcapture:latest --push .
 docker buildx imagetools inspect rhocheck/soundcapture:latest
 
 # run docker container
 docker run --device=/dev/snd -p 10010:10010 --env ALSA_DEVICE=hw:1,0 rhocheck/soundcapture
+

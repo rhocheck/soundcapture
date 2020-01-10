@@ -17,6 +17,7 @@ public:
   unsigned int GetBufferSize();
 
 protected:
+  void SetVolume(long volume);
   snd_pcm_t* m_handle = nullptr;
   snd_pcm_hw_params_t* m_params = nullptr;
   std::string m_device = "default";

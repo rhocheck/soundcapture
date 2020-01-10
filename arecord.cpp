@@ -31,6 +31,8 @@ bool CArecord::Init()
   snd_pcm_uframes_t frames;
   int rc;
 
+  SetVolume(60);
+
   // Open PCM device for recording (capture).
   rc = snd_pcm_open(&m_handle, m_device.c_str(), SND_PCM_STREAM_CAPTURE, 0);
   if (rc < 0)
@@ -80,6 +82,34 @@ bool CArecord::Init()
   }
 
   return true;
+}
+
+void CArecord::SetVolume(long volume)
+{
+    long min, max;
+    snd_mixer_t *handle;
+    snd_mixer_selem_id_t *sid;
+    const char *selem_name = "Mic";
+    std::string card = m_device;
+
+    std::size_t found = m_device.find(",");
+    if (found != std::string::npos)
+      card = m_device.substr(0, found);
+
+    snd_mixer_open(&handle, 0);
+    snd_mixer_attach(handle, card.c_str());
+    snd_mixer_selem_register(handle, NULL, NULL);
+    snd_mixer_load(handle);
+
+    snd_mixer_selem_id_alloca(&sid);
+    snd_mixer_selem_id_set_index(sid, 0);
+    snd_mixer_selem_id_set_name(sid, selem_name);
+    snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid);
+
+    snd_mixer_selem_get_capture_volume_range(elem, &min, &max);
+    snd_mixer_selem_set_capture_volume_all(elem, volume * max / 100);
+
+    snd_mixer_close(handle);
 }
 
 bool CArecord::Record(unsigned int millis)
